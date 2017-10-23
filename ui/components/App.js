@@ -1,11 +1,10 @@
 import React, {Component} from 'react'
-import {render} from 'react-dom'
-import {PageContainer} from '../containers'
+import {PageProvider} from '../containers'
 
 class App extends Component {
   render () {
     return (
-      <PageContainer />
+      <PageProvider />
     )
   }
 }

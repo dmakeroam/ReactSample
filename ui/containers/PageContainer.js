@@ -1,27 +1,42 @@
 import React, {Component} from 'react'
-import {render} from 'react-dom'
-import fetch from 'isomorphic-fetch'
 import {Page} from '../components'
+import { connect } from 'react-redux'
+import {fetching} from '../state/actions'
 
 class PageContainer extends Component {
-
-  state = {
-    pages: []
-  }
-
   componentDidMount () {
-    fetch('http://localhost:8081/api/v1/pages')
-     .then((response) => response.json())
-     .then(json => this.setState({pages : json}))
+    this.props.fetchPages()
   }
 
   render () {
-     return (
-         <div>
-         <Page pages = {this.state.pages}/>
-         </div>
-     )
+    var page = null
+    if (this.props.shouldAppearTable) {
+      page = <Page pages={this.props.pages} />
+    } else {
+      page = this.props.message
+    }
+    return (
+      <div>
+        {page}
+      </div>
+    )
   }
 }
 
-export default PageContainer
+const mapStateToProps = (state) => {
+  return {
+    pages: state.page.pages,
+    shouldAppearTable: state.page.shouldAppearTable,
+    message: state.page.message
+  }
+}
+
+const mapDispathToProps = (dispatch) => {
+  return {
+    fetchPages: () => {
+      dispatch(fetching())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispathToProps)(PageContainer)
